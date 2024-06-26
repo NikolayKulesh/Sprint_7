@@ -2,6 +2,7 @@ import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.example.OrderClient;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,9 +20,10 @@ public class OrdersListTest {
     @DisplayName("Check the response code returns a list of orders")
     @Description("Test for API method GET /api/v1/orders")
     public void getOrdersList() {
-        Response response =
-                given()
-                        .get("/api/v1/orders");
+        OrderClient orderClient = new OrderClient();
+
+        Response response = orderClient.getOrders();
+
         response.then().assertThat().body("orders.id", notNullValue())
                 .and().
                 statusCode(200);

@@ -2,6 +2,7 @@ import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.example.OrderClient;
 import org.example.OrderCreate;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,14 +55,10 @@ public class OrderCreateTest {
     @DisplayName("Check the color and track field in the response body")
     @Description("Check that the response contains the track and the response code 201")
     public void addOrderTest() {
-        OrderCreate orderCreate = new OrderCreate(firstName, lastName, address, metroStation, phone, rentTime, deliveryDate, comment, colour);
-        Response response =
-                given()
-                        .header("Content-type", "application/json")
-                        .and()
-                        .body(orderCreate)
-                        .when()
-                        .post("/api/v1/orders");
+        OrderClient orderClient = new OrderClient();
+
+        Response response = orderClient.createOrder(firstName, lastName, address, metroStation, phone, rentTime, deliveryDate, comment, colour);
+
         response.then().assertThat().body("track", notNullValue())
                 .and()
                 .statusCode(201);

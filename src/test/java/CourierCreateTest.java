@@ -3,6 +3,7 @@ import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.example.CourierClient;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,8 +33,6 @@ public class CourierCreateTest {
 
         assertEquals("Неверный статус код", 201, response.statusCode());
         assertEquals("Неверный статус код", 200, loginResponse.statusCode());
-
-        courierClient.delete(id);
     }
 
     @Test
@@ -48,8 +47,6 @@ public class CourierCreateTest {
         id = loginResponse.then().extract().path("id").toString();
 
         response.then().assertThat().body("ok", equalTo(true));
-
-        courierClient.delete(id);
     }
 
     @Test
@@ -67,8 +64,6 @@ public class CourierCreateTest {
         doubleResponse.then().assertThat().body("message", equalTo("Этот логин уже используется"))
                 .and()
                 .statusCode(409);
-
-        courierClient.delete(id);
     }
 
     @Test
@@ -83,5 +78,11 @@ public class CourierCreateTest {
                 .statusCode(400);
     }
 
+   @After
+    public void tearDown() {
+        if(id != null) {
+          courierClient.delete(id);
+        }
+    }
 
 }
